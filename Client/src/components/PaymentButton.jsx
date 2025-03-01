@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchToken, setOrder } from "../store/orderSlice";
 import generateOrder from "../utils/generateOrder";
+import removeKeyRecursive from "../utils/removeKeyRecursive";
 
 const PaymentButton = ({
   integrationMethod,
@@ -9,7 +10,9 @@ const PaymentButton = ({
   actionForm,
   arrayMethodPay,
   lenguageSelect,
+  appearance,
 }) => {
+  const { logo, theme } = appearance;
   const { init, control } = lenguageSelect;
   const { pay, register, payRegister, payToken } = actionForm;
   const { popUp, embebed, redirect } = integrationMethod;
@@ -34,9 +37,23 @@ const PaymentButton = ({
         },
       })
     );
-  }, [dispatch, integrationMethod, amount, actionForm, arrayMethodPay]);
+  }, [
+    dispatch,
+    integrationMethod,
+    amount,
+    actionForm,
+    arrayMethodPay,
+    lenguageSelect,
+    appearance,
+  ]);
 
   const handlePayment = () => {
+    const containerIframe = document.querySelector("#container-iframe");
+    if (embebed) containerIframe.style.backgroundColor = "white";
+    const paymentMessage = document.querySelector("#payment-message");
+    // Limpiar mensaje de pago
+    paymentMessage.innerHTML = "";
+
     // Verifica que el contenedor existe antes de ejecutar LoadForm
     const container = document.querySelector("#iframe-payment");
     if (!container) {
@@ -100,6 +117,10 @@ const PaymentButton = ({
           onCancel: "http://localhost:5173/",
         },
       },
+      appearance: {
+        logo: logo,
+        theme: theme,
+      },
     };
 
     console.log("🟢 Configuración enviada a Izipay:", paymentConfig);
@@ -111,26 +132,11 @@ const PaymentButton = ({
     const callbackResponsePayment = (response) => {
       console.log("🔹 Respuesta de Izipay:", response); // ✅ Ver en la consola
 
-      const paymentMessage = document.querySelector("#payment-message");
-
       if (paymentMessage) {
-        let formattedResponse = response;
-
-        // Verifica si `payloadHttp` existe y es un string JSON
-        if (response.payloadHttp) {
-          try {
-            formattedResponse = JSON.parse(response.payloadHttp);
-          } catch (error) {
-            console.error("❌ Error al parsear payloadHttp:", error);
-          }
-        } else {
-          formattedResponse = response;
-        }
+        let formattedResponse = removeKeyRecursive(response, "payloadHttp");
 
         // Mostrar el JSON formateado en el frontend
         paymentMessage.innerHTML = JSON.stringify(formattedResponse, null, 2);
-
-        const containerIframe = document.querySelector("#container-iframe");
 
         containerIframe.style.display = "none";
       }
