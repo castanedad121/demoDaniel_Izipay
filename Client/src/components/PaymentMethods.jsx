@@ -51,7 +51,7 @@ export const PaymentMethods = ({ methodPay, setMethodPay }) => {
             value=""
             className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"
             checked={methodPay.all[0]}
-            onClick={(e) => handleMethodPay(e.currentTarget.id)}
+            onChange={(e) => handleMethodPay(e.currentTarget.id)}
           />
           <label className="ms-2 text-sm font-light text-gray-300">Todos</label>
         </div>

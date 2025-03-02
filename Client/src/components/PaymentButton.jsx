@@ -11,8 +11,22 @@ const PaymentButton = ({
   arrayMethodPay,
   lenguageSelect,
   appearance,
+  customData,
+  setResponse,
 }) => {
-  const { logo, theme } = appearance;
+  const {
+    field1,
+    field2,
+    field3,
+    field4,
+    field5,
+    field6,
+    field7,
+    field8,
+    field9,
+    field10,
+  } = customData;
+  const { logo, theme, hColor } = appearance;
   const { init, control } = lenguageSelect;
   const { pay, register, payRegister, payToken } = actionForm;
   const { popUp, embebed, redirect } = integrationMethod;
@@ -45,6 +59,7 @@ const PaymentButton = ({
     arrayMethodPay,
     lenguageSelect,
     appearance,
+    customData,
   ]);
 
   const handlePayment = () => {
@@ -121,6 +136,19 @@ const PaymentButton = ({
         logo: logo,
         theme: theme,
       },
+
+      customFields: {
+        field1: field1,
+        field2: field2,
+        field3: field3,
+        field4: field4,
+        field5: field5,
+        field6: field6,
+        field7: field7,
+        field8: field8,
+        field9: field9,
+        field10: field10,
+      },
     };
 
     console.log("🟢 Configuración enviada a Izipay:", paymentConfig);
@@ -137,7 +165,7 @@ const PaymentButton = ({
 
         // Mostrar el JSON formateado en el frontend
         paymentMessage.innerHTML = JSON.stringify(formattedResponse, null, 2);
-
+        setResponse(true);
         containerIframe.style.display = "none";
       }
     };
@@ -151,7 +179,7 @@ const PaymentButton = ({
   return (
     <button
       onClick={handlePayment}
-      className="w-max bg-[#eb2f2f] border-none py-1 px-4 text-base cursor-pointer hover:bg-[#f24949] rounded-sm hover:scale-95 hover:text-white"
+      className={`w-max ${hColor}  py-1 px-4 text-base cursor-pointer hover:${hColor} rounded-sm hover:scale-95`}
       disabled={status === "loading"}
     >
       {status === "loading"

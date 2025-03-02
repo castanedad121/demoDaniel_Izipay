@@ -7,8 +7,13 @@ import { LanguageSelector } from "./LanguageSelector";
 import { AmountInput } from "./AmountInput";
 import { LogoInput } from "./LogoInput";
 import { ThemeColor } from "./ThemeColor";
+import { CustomFields } from "./CustomFields";
+import { SiCcleaner } from "react-icons/si";
 
 const Checkout = () => {
+  const [response, setResponse] = useState(false);
+  const paymentMessage = document.querySelector("#payment-message");
+
   const [lenguageSelect, setLenguageSelect] = useState({
     init: window.Izipay.enums.langInit.ESP,
     control: true,
@@ -43,7 +48,26 @@ const Checkout = () => {
   const [appearance, setAppearance] = useState({
     logo: "",
     theme: window.Izipay.enums.theme.RED,
+    hColor: "bg-[#FF4240]",
   });
+
+  const [customData, setCustomData] = useState({
+    field1: "",
+    field2: "",
+    field3: "",
+    field4: "",
+    field5: "",
+    field6: "",
+    field7: "",
+    field8: "",
+    field9: "",
+    field10: "",
+  });
+
+  const handleEraseMsg = () => {
+    paymentMessage.innerHTML = "";
+    setResponse(false);
+  };
 
   useEffect(() => {
     let newArrayMethodPay = [];
@@ -73,6 +97,7 @@ const Checkout = () => {
         />
         <LogoInput appearance={appearance} setAppearance={setAppearance} />
         <ThemeColor appearance={appearance} setAppearance={setAppearance} />
+        <CustomFields customData={customData} setCustomData={setCustomData} />
       </section>
       <section className="flex flex-col items-center md:w-1/2">
         <PaymentButton
@@ -82,11 +107,22 @@ const Checkout = () => {
           arrayMethodPay={arrayMethodPay}
           lenguageSelect={lenguageSelect}
           appearance={appearance}
+          customData={customData}
+          setResponse={setResponse}
         />
         <pre
           id="payment-message"
           className="w-min p-4 font-light text-white text-sm"
         ></pre>
+        {response && (
+          <button
+            onClick={handleEraseMsg}
+            className="text-[#1A90FF] flex  justify-center items-center gap-1 hover:scale-90 hover:bg-[#1a90ff2f] p-2 rounded-sm"
+          >
+            <SiCcleaner className="size-6" />
+            Respuesta
+          </button>
+        )}
 
         <div
           id="container-iframe"

@@ -38,7 +38,7 @@ export const LanguageSelector = ({ lenguageSelect, setLenguageSelect }) => {
             value=""
             className="w-4 h-4 text-blue-600 focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"
             checked={lenguageSelect.control}
-            onClick={(e) => handleLenguage(e.target.id)}
+            onChange={(e) => handleLenguage(e.target.id)}
           />
           <label className="ms-2 text-sm font-light text-gray-300">
             Control para elegir
