@@ -1,5 +1,6 @@
 export const ThemeColor = ({ appearance, setAppearance }) => {
   const { theme } = appearance;
+
   const color = {
     RED: window.Izipay.enums.theme.RED,
     LIGHT_RED: window.Izipay.enums.theme.LIGHT_RED,
@@ -9,11 +10,12 @@ export const ThemeColor = ({ appearance, setAppearance }) => {
     BLUE: window.Izipay.enums.theme.BLUE,
     LIGHTGREEN: window.Izipay.enums.theme.LIGHTGREEN,
   };
+  console.log(color);
   const handleTheme = (event) => {
     setAppearance((prev) => ({
       ...prev,
-      theme: event.currentTarget.id,
-      hColor: event.currentTarget.dataset.color, // ✅ Accede al dataset
+      theme: event.currentTarget?.id,
+      hColor: event.currentTarget?.dataset.color, // ✅ Accede al dataset
     }));
   };
   return (
