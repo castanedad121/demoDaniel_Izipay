@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { createDispatchHook, useDispatch, useSelector } from "react-redux";
 import { fetchToken, setOrder } from "../store/orderSlice";
 import generateOrder from "../utils/generateOrder";
 import removeKeyRecursive from "../utils/removeKeyRecursive";
+import getCurrentTransactionTime from "../utils/getCurrentTransactionTime";
 
 const PaymentButton = ({
   integrationMethod,
@@ -12,8 +13,12 @@ const PaymentButton = ({
   lenguageSelect,
   appearance,
   customData,
-  setResponse,
+  configCurrency,
+  processType,
+  cardToken,
+  merchantBuyerId,
 }) => {
+  const { currency, merchantCode } = configCurrency;
   const {
     field1,
     field2,
@@ -44,7 +49,7 @@ const PaymentButton = ({
         transactionId,
         orderData: {
           requestSource: "ECOMMERCE",
-          merchantCode: "4001834",
+          merchantCode: configCurrency.merchantCode,
           orderNumber,
           publicKey: "VErethUtraQuxas57wuMuquprADrAHAb",
           amount: amount,
@@ -60,12 +65,18 @@ const PaymentButton = ({
     lenguageSelect,
     appearance,
     customData,
+    merchantCode,
+    configCurrency,
+    processType,
+    cardToken,
+    merchantBuyerId,
   ]);
 
   const handlePayment = () => {
     const containerIframe = document.querySelector("#container-iframe");
     if (embebed) containerIframe.style.backgroundColor = "white";
     const paymentMessage = document.querySelector("#payment-message");
+    const objetConfig = document.querySelector("#objet-config");
     // Limpiar mensaje de pago
     paymentMessage.innerHTML = "";
 
@@ -84,6 +95,7 @@ const PaymentButton = ({
 
     const paymentConfig = {
       transactionId,
+
       action: register
         ? window.Izipay.enums.payActions.REGISTER
         : payRegister
@@ -91,18 +103,21 @@ const PaymentButton = ({
         : payToken
         ? window.Izipay.enums.payActions.PAY_TOKEN
         : window.Izipay.enums.payActions.PAY,
-      merchantCode: "4001834",
+      merchantCode: merchantCode,
       order: {
         orderNumber,
-        currency: "PEN",
+        currency: currency,
         amount: amount,
-        merchantBuyerId: "mc1768",
-        dateTimeTransaction: Date.now().toString(),
+        merchantBuyerId: merchantBuyerId,
+        dateTimeTransaction: getCurrentTransactionTime(),
         payMethod:
           arrayMethodPay.length > 1
             ? arrayMethodPay.join(", ")
             : arrayMethodPay[0] || "",
-        processType: window.Izipay.enums.processType.AUTHORIZATION,
+        processType: processType,
+      },
+      token: {
+        cardToken: cardToken,
       },
       billing: {
         firstName: "Juan",
@@ -137,18 +152,18 @@ const PaymentButton = ({
         theme: theme,
       },
 
-      customFields: {
-        field1: field1,
-        field2: field2,
-        field3: field3,
-        field4: field4,
-        field5: field5,
-        field6: field6,
-        field7: field7,
-        field8: field8,
-        field9: field9,
-        field10: field10,
-      },
+      customFields: [
+        { name: "field1", value: field1 },
+        { name: "field2", value: field2 },
+        { name: "field3", value: field3 },
+        { name: "field4", value: field4 },
+        { name: "field5", value: field5 },
+        { name: "field6", value: field6 },
+        { name: "field7", value: field7 },
+        { name: "field8", value: field8 },
+        { name: "field9", value: field9 },
+        { name: "field10", value: field10 },
+      ],
     };
 
     console.log("🟢 Configuración enviada a Izipay:", paymentConfig);
@@ -165,7 +180,7 @@ const PaymentButton = ({
 
         // Mostrar el JSON formateado en el frontend
         paymentMessage.innerHTML = JSON.stringify(formattedResponse, null, 2);
-        setResponse(true);
+        objetConfig.innerHTML = JSON.stringify(paymentConfig, null, 2);
         containerIframe.style.display = "none";
       }
     };
@@ -186,7 +201,7 @@ const PaymentButton = ({
         ? "Loading..."
         : amount === ""
         ? "Ingresar Monto"
-        : `PEN ${amount} →`}
+        : `${currency} ${amount} →`}
     </button>
   );
 };

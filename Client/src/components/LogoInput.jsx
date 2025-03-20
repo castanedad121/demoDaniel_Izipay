@@ -1,6 +1,11 @@
 import { useState } from "react";
-
-export const LogoInput = ({ appearance, setAppearance }) => {
+import { RiArrowDownSLine } from "react-icons/ri";
+export const LogoInput = ({
+  appearance,
+  setAppearance,
+  viewLogoInput,
+  setViewLogoInput,
+}) => {
   const { logo } = appearance;
   const [error, setError] = useState("");
 
@@ -35,9 +40,22 @@ export const LogoInput = ({ appearance, setAppearance }) => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-2">
-      <div className="w-full flex justify-start items-center gap-4">
-        <h2 className="font-medium text-[#1A90FF]">Logo:</h2>
+    <div className="w-full flex flex-col  border-b-[1px] border-[#1A90FF]">
+      <div className="flex justify-between items-center">
+        <h2 className=" text-[#1A90FF] pb-2">Ruta del Logo del comercio:</h2>
+        <RiArrowDownSLine
+          className={`size-6 pb-1 hover:cursor-pointer hover:scale-110 text-[#1A90FF] hover:text-[#FFFF]
+               ${!viewLogoInput && "rotate-180 pb-0 pt-1"}`}
+          onClick={() => {
+            setViewLogoInput(!viewLogoInput);
+          }}
+        />
+      </div>
+      <div
+        className={`w-full flex flex-col p-3 items-center rounded-tr-md border-r-[1px] border-t-[1px]  border-[#1A90FF] justify-evenly ${
+          viewLogoInput ? "block" : "hidden"
+        }`}
+      >
         <input
           type="text"
           value={logo}
@@ -45,13 +63,13 @@ export const LogoInput = ({ appearance, setAppearance }) => {
           onBlur={handleBlur}
           placeholder="https://www.miweb.com/logo..."
           className="w-full bg-transparent placeholder:text-slate-400 text-slate-200 
-      text-sm border border-slate-300 rounded-md px-2 py-1 
+      text-sm border border-slate-300 rounded-md px-2 py-1
       transition-all duration-300 ease-in-out focus:outline-none 
       focus:border-blue-500 focus:ring focus:ring-[#1A90FF]
       hover:border-blue-400 hover:shadow-md"
         />
+        {error && <p className="text-red-500 text-sm pt-2">{error}</p>}
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };
