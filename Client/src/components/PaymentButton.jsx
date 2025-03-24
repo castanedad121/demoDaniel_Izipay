@@ -116,12 +116,13 @@ const PaymentButton = ({
             : arrayMethodPay[0] || "",
         processType: processType,
       },
+
       token: {
         cardToken: cardToken,
       },
       billing: {
-        firstName: "Juan",
-        lastName: "Wick",
+        firstName: "Daniel",
+        lastName: "Castañeda",
         email: "jwick@izipay.pe",
         phoneNumber: "989339999",
         street: "calle el demo",
@@ -147,6 +148,7 @@ const PaymentButton = ({
           onCancel: "http://localhost:5173/",
         },
       },
+
       appearance: {
         logo: logo,
         theme: theme,
